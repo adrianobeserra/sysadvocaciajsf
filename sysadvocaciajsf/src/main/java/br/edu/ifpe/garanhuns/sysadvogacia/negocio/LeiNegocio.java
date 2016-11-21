@@ -5,6 +5,8 @@
  */
 package br.edu.ifpe.garanhuns.sysadvogacia.negocio;
 
+import br.edu.ifpe.garanhuns.sysadvogacia.entidades.Advogado;
+import br.edu.ifpe.garanhuns.sysadvogacia.entidades.Cliente;
 import br.edu.ifpe.garanhuns.sysadvogacia.entidades.Lei;
 import br.edu.ifpe.garanhuns.sysadvogacia.entidades.Processo;
 import br.edu.ifpe.garanhuns.sysadvogacia.persistencia.LeiDAO;

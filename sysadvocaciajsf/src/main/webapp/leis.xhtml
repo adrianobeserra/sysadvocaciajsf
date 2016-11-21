@@ -11,18 +11,18 @@
         </h:form >
         <p:panel style="height: 100%; width: 98%; top: 10px; position: relative; border-width: 0px">
             <f:facet name="header">
-                Cadastro de Clientes
+                Cadastro de Leis
             </f:facet>
             <p:panel style="border-width: 0px; width: 100%; height: 100%">
                 <p:dataTable id="listaBean" rows="10" paginator="true" reflow="true" styleClass="semBorda"
-                             paginatorPosition="top" value="#{CadastroClientesController.listaBean}" var="bean" emptyMessage="Nenhum registro encontrado"
+                             paginatorPosition="top" value="#{CadastroLeiController.listaBean}" var="bean" emptyMessage="Nenhum registro encontrado"
                              style="height: 100%; width: 100%;">
                     <f:facet name="header">
                         <div style="float: left;">
                             <h:form>
                                 <p:commandButton id="btnInserir" styleClass="semBorda"
-                                                 title="Inserir um Novo Cliente"
-                                                 action="#{CadastroClientesController.botaoInserirAction()}"
+                                                 title="Inserir uma Nova Lei"
+                                                 action="#{CadastroLeiController.botaoInserirAction()}"
                                                  oncomplete="PF('dialogCadastro').show();"
                                                  image="ui-icon ui-icon-document"
                                                  update="dlgCadastro">
@@ -36,13 +36,13 @@
                         <h:panelGrid columns="2" style="border: none! important">
                             <p:commandLink styleClass="ui-icon ui-icon-pencil" oncomplete="PF('dialogCadastro').show();"
                                            update="dlgCadastro" title="Click aqui para alterar este cadastro!"
-                                           action="#{CadastroClientesController.botaoAlterarAction}">
+                                           action="#{CadastroLeiController.botaoAlterarAction}">
                                 <f:setPropertyActionListener value="#{bean}"
-                                                             target="#{CadastroClientesController.bean}"/>
+                                                             target="#{CadastroLeiController.bean}"/>
                             </p:commandLink>
                             <p:commandLink oncomplete="PF('confirmation').show();" styleClass="ui-icon ui-icon-trash">
                                 <f:setPropertyActionListener value="#{bean}"
-                                                             target="#{CadastroClientesController.bean}" />
+                                                             target="#{CadastroLeiController.bean}" />
                             </p:commandLink>
                         </h:panelGrid>
                     </p:column>
@@ -51,54 +51,73 @@
                         <h:outputText value="#{bean.codigo}"/>
                     </p:column>
 
-                    <p:column headerText="Nome" style="width:30%" >
-                        <h:outputText value="#{bean.nome}"/>
+                    <p:column headerText="Capitulo" style="width:30%" >
+                        <h:outputText value="#{bean.capitulo}"/>
                     </p:column>
-                    <p:column headerText="Endereço" style="width:40%" >
-                        <h:outputText value="#{bean.endereco}"/>
+                    <p:column headerText="Descrição" style="width:20%" >
+                        <h:outputText value="#{bean.descricao}"/>
                     </p:column>
-                    <p:column headerText="Telefone" style="width:20%" >
-                        <h:outputText value="#{bean.telefone}"/>
+                    <p:column headerText="Processo" style="width:20%" >
+                        <h:outputText value="#{bean.processoCodigo.codigo}"/>
+                    </p:column>
+                    <p:column headerText="Artigo" style="width:40%" >
+                        <h:outputText value="#{bean.artigo}"/>
+                    </p:column>
+                    <p:column headerText="Tipo" style="width:20%" >
+                        <h:outputText value="#{bean.tipo}"/>
                     </p:column>
                 </p:dataTable>
             </p:panel>
 
             <p:dialog id="dlgCadastro" widgetVar="dialogCadastro" height="190" closeOnEscape="true" 
                       responsive="true" appendTo="@(body)" 
-                      header="Cadastro de Clientes" resizable="false" modal="true">
+                      header="Cadastro de Leis" resizable="false" modal="true">
                 <p:panel style="border-width: 0px" >
                     <h:form id="formCadastro">
                         <h:panelGrid columns="3" cellpadding="10" cellspacing="5">
-                            <h:outputLabel value="Nome:"/>                            
-                            <p:inputText id="txtNome" value="#{CadastroClientesController.bean.nome}" required="true" size="50"
-                                         requiredMessage="Campo [Nome] deve ser prenchido obrigatoriamente!"
-                                         title="Informe o Nome!">
+                            <h:outputLabel value="Codigo:"/>                            
+                            <p:inputText id="txtCodigo" value="#{CadastroLeiController.bean.codigo}" required="true" size="50"
+                                         requiredMessage="Campo deve ser prenchido obrigatoriamente!"
+                                         title="Informe o código!">
                                 <p:focus />
                             </p:inputText>
-                            <p:tooltip id="toolTxtNome" for="txtNome" showEvent="focus" hideEvent="blur" position="top"/>
+                            <p:tooltip id="toolTxtCodigo" for="txtCodigo" showEvent="focus" hideEvent="blur" position="top"/>
 
-                            <h:outputLabel value="CPF/CNPJ:"/>      
-                            <p:inputText id="txtCPFCNPJ" value="#{CadastroClientesController.bean.cpfCnpj}" required="true" size="30"
-                                         requiredMessage="Campo [CPF/CNPJ] deve ser prenchido obrigatoriamente!"
-                                         title="Informe o CPF/CNPJ!"/>
-                            <p:tooltip id="toolCPFCNPJ" for="txtCPFCNPJ" showEvent="focus" hideEvent="blur" position="top"/>
+                            <h:outputLabel value="Codigo do Processo:"/>      
+                            <p:inputText id="txtCodProc" value="#{CadastroLeiController.bean.processoCodigo.codigo}" required="true" size="30"
+                                         requiredMessage="Campo codigo de processo deve ser prenchido obrigatoriamente!"
+                                         title="Informe o codigo do processo!"/>
+                            <p:tooltip id="toolCodProc" for="txtCodigo" showEvent="focus" hideEvent="blur" position="top"/>
+                            
+                             <h:outputLabel value="Descrição"/>      
+                             <p:inputText id="txtDescricao" value="#{CadastroLeiController.bean.descricao}" required="true" size="30"
+                                         requiredMessage="Campo descricao deve ser prenchido obrigatoriamente!"
+                                         title="Informe a descrição!"/>
+                            <p:tooltip id="toolDescricao" for="txtDescricao" showEvent="focus" hideEvent="blur" position="top"/>
 
-                            <h:outputLabel value="Endereço:"/>      
-                            <p:inputText id="txtEndereco" value="#{CadastroClientesController.bean.endereco}" size="80"
-                                         title="Informe o Endereço!"/>
-                            <p:tooltip id="toolEndereco" for="txtEndereco" showEvent="focus" hideEvent="blur" position="top"/>
+                             <h:outputLabel value="Capitulo:"/>      
+                            <p:inputText id="txtCapitulo" value="#{CadastroLeiController.bean.capitulo}" required="true" size="30"
+                                         requiredMessage="Campo capítulo deve ser prenchido obrigatoriamente!"
+                                         title="Informe o capítulo!"/>
+                            <p:tooltip id="toolCapitulo" for="txtCapitulo" showEvent="focus" hideEvent="blur" position="top"/>
 
-                            <h:outputLabel value="Telefone:"/>      
-                            <p:inputText id="txtTelefone" value="#{CadastroClientesController.bean.telefone}" size="50"
-                                         title="Informe o Telefone!"/>
-                            <p:tooltip id="toolTelefone" for="txtTelefone" showEvent="focus" hideEvent="blur" position="top"/>
+                            
+                            <h:outputLabel value="Artigo:"/>      
+                            <p:inputText id="txtArtigo" value="#{CadastroLeiController.bean.artigo}" size="80"
+                                         title="Informe o artigo!"/>
+                            <p:tooltip id="toolArtigo" for="txtArtigo" showEvent="focus" hideEvent="blur" position="top"/>
+
+                            <h:outputLabel value="Tipo:"/>      
+                            <p:inputText id="txtTipo" value="#{CadastroLeiController.bean.tipo}" size="50"
+                                         title="Informe o Tipo!"/>
+                            <p:tooltip id="toolTipo" for="txtTipo" showEvent="focus" hideEvent="blur" position="top"/>
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="4" cellpadding="5" style="float: right" >
-                            <p:commandButton value="Salvar" styleClass="ui-priority-primary" 
+                            <p:commandButton value="Salve" styleClass="ui-priority-primary" 
                                              process="@this formCadastro"
                                              update="msgs formCadastro listaBean" 
-                                             action="#{CadastroClientesController.botaoSalvarAction()}"
+                                             action="#{CadastroLeiController.botaoSalvarAction()}"
                                              title="Click aqui para salvar as informações deste cadastro"
                                              icon="ui-icon ui-icon-disk">
                             </p:commandButton>                     
@@ -111,14 +130,14 @@
                 </p:panel>
             </p:dialog>
 
-            <p:confirmDialog message="Deseja realmente excluir #{CadastroClientesController.bean.nome}?"
+            <p:confirmDialog message="Deseja realmente excluir #{CadastroLeiController.bean.codigo}?"
                              appendTo="@(body)"
                              header="Confirmação" severity="alert" 
                              widgetVar="confirmation">
                 <p:commandButton value="Sim" update="msgs formCadastro listaBean"
                                  process="@this"
                                  oncomplete="PF('confirmation').hide()"
-                                 action="#{CadastroClientesController.botaoExcluirAction}" />
+                                 action="#{CadastroLeiController.botaoExcluirAction}" />
                 <p:commandButton value="Não" onclick="PF('confirmation').hide()"
                                  type="button" />
             </p:confirmDialog>
