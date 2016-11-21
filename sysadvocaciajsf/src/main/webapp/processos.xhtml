@@ -1,0 +1,206 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/template.xhtml">
+    <ui:define name="content">
+
+        
+        <h:form id="msgs" >
+            <p:growl life="5000" showDetail="true" />
+        </h:form >
+        <p:panel style="height: 100%; width: 98%; top: 10px; position: relative; border-width: 0px">
+            <f:facet name="header">
+                Cadastro de Processos
+            </f:facet>
+            <p:panel style="border-width: 0px; width: 100%; height: 100%">
+                <p:dataTable id="listaBean" rows="10" paginator="true" reflow="true" 
+                             styleClass="table semBorda"
+                             paginatorPosition="top" value="#{CadastroProcessosController.listaBean}" var="bean" emptyMessage="Nenhum registro encontrado"
+                             style="height: 100%; width: 100%;">
+                    <f:facet name="header">
+                        <div style="float: left;">
+                            <h:form>
+                                <p:commandButton id="btnInserir" styleClass="semBorda"
+                                                 title="Inserir um Novo Processo"
+                                                 action="#{CadastroProcessosController.botaoInserirAction()}"
+                                                 oncomplete="PF('dialogCadastro').show();"
+                                                 image="ui-icon ui-icon-document"
+                                                 update="dlgCadastro">
+                                </p:commandButton>
+                                <p:tooltip id="toolBtnInserir" for="btnInserir" showEvent="mousemove" hideEvent="mouseout" />
+                            </h:form>
+                        </div>
+                    </f:facet>
+
+                    <p:column style="width:80px">
+                        <h:panelGrid columns="2" style="border: none! important">
+                            <p:commandLink styleClass="ui-icon ui-icon-pencil" oncomplete="PF('dialogCadastro').show();"
+                                           update="dlgCadastro" title="Click aqui para alterar este cadastro!"
+                                           action="#{CadastroProcessosController.botaoAlterarAction}">
+                                <f:setPropertyActionListener value="#{bean}"
+                                                             target="#{CadastroProcessosController.bean}"/>
+                            </p:commandLink>
+                            <p:commandLink oncomplete="PF('confirmation').show();" styleClass="ui-icon ui-icon-trash">
+                                <f:setPropertyActionListener value="#{bean}"
+                                                             target="#{CadastroProcessosController.bean}" />
+                            </p:commandLink>
+                        </h:panelGrid>
+                    </p:column>
+
+                    <p:column headerText="Código" style="width:10%">
+                        <h:outputText value="#{bean.codigo}"/>
+                    </p:column>
+
+                    <p:column headerText="Descrição" style="width:30%" >
+                        <h:outputText value="#{bean.descricao}"/>
+                    </p:column>
+                    <p:column headerText="Data de Abertura" style="width:40%" >
+                        <h:outputText value="#{bean.dataAbertura}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:dialog id="dlgCadastro" widgetVar="dialogCadastro" height="320" closeOnEscape="true"
+                      width="750"
+                      responsive="true" appendTo="@(body)" 
+                      header="Cadastro de Processos" resizable="false" modal="true">
+
+                <p:tabView id="tabProcessos">
+                    <p:tab title="Processo">
+                        <h:form id="formCadastro">
+                            <p:panel id="painelCadastro" style="border-width: 0px" >
+                                <h:panelGrid columns="3" cellpadding="10" cellspacing="5">
+                                    <h:outputLabel value="Descrição:"/>                            
+                                    <p:inputText id="txtDescricao" value="#{CadastroProcessosController.bean.descricao}" required="true" size="50"
+                                                 requiredMessage="Campo [Descrição] deve ser prenchido obrigatoriamente!"
+                                                 title="Informe a Descrição!">
+                                        <p:focus />
+                                    </p:inputText>
+                                    <p:tooltip id="toolTxtDescricao" for="txtDescricao" showEvent="focus" hideEvent="blur" position="top"/>
+
+                                    <h:outputLabel value="Data de Abertura:"/>      
+                                    <p:calendar id="txtDataAbertura" value="#{CadastroProcessosController.bean.dataAbertura}" required="true" 
+                                                pattern="dd/MM/yyyy"
+                                                requiredMessage="Campo [Data de Abertura] deve ser prenchido obrigatoriamente!"
+                                                title="Informe a Data de Abertura!">
+                                    </p:calendar>
+                                    <p:tooltip id="toolDataAbertura" for="txtDataAbertura" showEvent="focus" hideEvent="blur" position="top"/>
+
+                                    <h:outputLabel value="Instância Atual:"/>      
+                                    <p:inputText id="txtInstancia" value="#{CadastroProcessosController.bean.instanciaAtual}" size="60"
+                                                 required="true" requiredMessage="Campo [Instância Atual] deve ser prenchido obrigatoriamente!" 
+                                                 title="Informe a Instância Atual!">
+                                    </p:inputText>
+                                    <p:tooltip id="toolInstancia" for="txtInstancia" showEvent="focus" hideEvent="blur" position="top"/>
+
+                                    <h:outputLabel value="Decisão Final:"/>      
+                                    <p:inputTextarea id="txtDecisao" value="#{CadastroProcessosController.bean.decisaoFinal}" 
+                                                     title="Informe a Decisão Final!" rows="3" cols="61">
+                                     </p:inputTextarea>
+                                    <p:tooltip id="toolDecisao" for="txtDecisao" showEvent="focus" hideEvent="blur" position="top"/>
+                                </h:panelGrid>
+
+
+                            </p:panel>
+                            <p:remoteCommand name="processFormCadastro" process="@form" update="msgs listaBean" action="#{CadastroProcessosController.botaoSalvarAction()}"/>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Clientes">
+                        <h:form id="formCliente">
+                            <h:panelGrid columns="2" cellpadding="10" cellspacing="10px">
+
+                                <p:selectOneMenu id="selectCliente" style="width: 400px" value="#{CadastroProcessosController.cliente}"
+                                                 converter="ClienteConverter">
+                                    <f:selectItem itemLabel="Selecione um Cliente"/>
+                                    <f:selectItems value="#{CadastroProcessosController.listarClientes()}" 
+                                                   var="cliente" itemLabel="#{cliente.nome}" itemValue="#{cliente}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton value="Adicionar Cliente ao Processo" action="#{CadastroProcessosController.botaoAdicionarClienteProcesso()}"
+                                                 update="tabProcessos:listaClientes" process="@this tabProcessos:formCliente"/>
+
+                            </h:panelGrid>
+                        </h:form>
+
+                        <p:dataTable id="listaClientes" rows="5" reflow="true" 
+                                     styleClass="table semBorda"
+                                     value="#{CadastroProcessosController.bean.clienteList}" var="cliente" emptyMessage="Nenhum cliente adicionado"
+                                     style="height: 98%; width: 98%;">
+                            <p:column headerText="Código" width="70">
+                                <h:outputText value="#{cliente.codigo}"/>
+                            </p:column>
+                            <p:column headerText="Nome" width="300">
+                                <h:outputText value="#{cliente.nome}"/>
+                            </p:column>
+                            <p:column headerText="CPF/CNPJ" width="150">
+                                <h:outputText value="#{cliente.cpfCnpj}"/>
+
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:tab>
+
+                    <p:tab title="Advogados">
+                        <h:form id="formAdvogado">
+                            <h:panelGrid columns="2" cellpadding="10" cellspacing="10px">
+                                <p:selectOneMenu style="width: 400px" value="#{CadastroProcessosController.advogado}"
+                                                 converter="AdvogadoConverter">
+                                    <f:selectItem itemLabel="Selecione um Advogado"/>
+                                    <f:selectItems value="#{CadastroProcessosController.listarAdvogados()}" 
+                                                   var="advogado" itemLabel="#{advogado.nome}" itemValue="#{advogado}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton value="Adicionar Advogado ao Processo" process="@this tabProcessos:formAdvogado" 
+                                                 update="tabProcessos:listaAdvogados" action="#{CadastroProcessosController.botaoAdicionarAdvodagoProcesso()}"/>
+                            </h:panelGrid>
+                        </h:form>
+                        <p:dataTable id="listaAdvogados" rows="5"  reflow="true" 
+                                     styleClass="table semBorda"
+                                     paginatorPosition="top" value="#{CadastroProcessosController.bean.advogadoList}" var="advogado" emptyMessage="Nenhum advogado adicionado"
+                                     style="height: 99%; width: 99%;">
+                            <p:column headerText="Código" width="50">
+                                <h:outputText value="#{advogado.codigo}"/>
+                            </p:column>
+                            <p:column headerText="Nome" width="350">
+                                <h:outputText value="#{advogado.nome}"/>
+                            </p:column>
+                            <p:column headerText="OAB" width="150">
+                                <h:outputText value="#{advogado.oab}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+
+                <br/>
+
+                <h:panelGrid columns="4" cellpadding="5" style="float: right" >
+                    <p:commandButton value="Salvar" styleClass="ui-priority-primary"  
+                                     onclick="processFormCadastro();"
+                                     title="Click aqui para salvar as informações deste cadastro"
+                                     icon="ui-icon ui-icon-disk" >
+                    </p:commandButton>                     
+                    <p:commandButton value="Cancelar" immediate="true" 
+                                     update="dlgCadastro"  styleClass="ui-priority-danger" 
+                                     onclick="PF('dialogCadastro').hide()">
+                    </p:commandButton>
+                </h:panelGrid>
+
+            </p:dialog>
+
+            <p:confirmDialog message="Deseja realmente excluir este processo?"
+                             appendTo="@(body)"
+                             header="Confirmação" severity="alert" 
+                             widgetVar="confirmation">
+                <p:commandButton value="Sim" update="msgs listaBean"
+                                 process="@this"
+                                 oncomplete="PF('confirmation').hide()"
+                                 action="#{CadastroProcessosController.botaoExcluirAction}" />
+                <p:commandButton value="Não" onclick="PF('confirmation').hide()"
+                                 type="button" />
+            </p:confirmDialog>
+
+        </p:panel>
+    </ui:define>
+</ui:composition>
